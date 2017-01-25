@@ -1,39 +1,47 @@
-<!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
     <head>
         <title>MusicU</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
     <body>
+        <div class ="navbar navbar-inverse navbar-fixed-top" role="navigation" style="background-color: #e4cd83">
         <div class = "container-fluid">
-            <div class="row">
-                <div class="col-xs-12" style="background-color: #e4cd83">
-                   <h1>MusicU</h1> 
+            <div class="navbar-header">
+                <button type ="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" style ="background-color: #000">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span class ="icon-bar" style="background-color: #ffffff"></span>
+                    <span class ="icon-bar" style="background-color: #ffffff"></span>
+                    <span class ="icon-bar" style="background-color: #ffffff"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">MusicU
+                </a>
+                
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class = "active" style= "background-color: #000"><a href="index.html"style>Home</a></li>
+                    <li style= "background-color: #ffffff"><a href="#">Profile</a></li>
+                    <li style= "background-color: #ffffff"><a href="#">Friends</a></li>
+                    <li style= "background-color: #ffffff"><a href="#">Groups</a></li>
+                    <li style= "background-color: #ffffff"><a href="#">Sign Out</a></li>
+                    <li style= "background-color: #ffffff"><a href="#">Help</a></li>
+                </ul>
+            </div>
+             <div class="row">
+                <div class="btn-group btn-group-justified">
+                    <a href="record_file.html" class="btn btn-lg btn-danger" style="white-space:normal">Record A File</a>
+                    <a href="share_recording.html" class="btn btn-lg btn-success" style="white-space:normal">Share A Recording</a>
+                    <a href="live_chat.html" class="btn btn-lg btn-primary" style="white-space:normal">Live Chat</a>
                 </div>
+            </div>
         </div>
-            <div class="row">
-                <div class="col-xs-4">
-            <a href= "record_file.html" class= "btn btn-danger btn-lg btn-block" style="white-space:normal">Record A File
-            </a>
-                </div>
-                <div class="col-xs-4">
-            <a href= "share_recording.html" class= "btn btn-success btn-lg btn-block"  style="white-space:normal">Share A Recording
-            </a>
-                </div>
-                <div class="col-xs-4">  
-            <a href= "live_chat.html" class= "btn btn-primary btn-lg btn-block" style="white-space:normal">Start A Live Chat
-            </a>
-                </div>
         </div>
+        
+        <div class = "container-fluid">
         </div>
     </body>
 </html>
