@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyAh457wLBVpJ4yUDziGB4hDsSO1JHzX13E",
+        authDomain: "webrtcandmidi-5f0dc.firebaseapp.com",
+        databaseURL: "https://webrtcandmidi-5f0dc.firebaseio.com",
+        storageBucket: "webrtcandmidi-5f0dc.appspot.com",
+        messagingSenderId: "1020618160895"
+      };
+      firebase.initializeApp(config);
+    </script>
+    <script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
+    <script type="text/javascript">
+      // FirebaseUI config.
+      var uiConfig = {
+        signInSuccessUrl: 'https://ninjahamster611.github.io/webRTCandMIDI/midi-webrtc.html',
+        signInOptions: [
+          // Leave the lines as is for the providers you want to offer your users.
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+          firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+          firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+          firebase.auth.GithubAuthProvider.PROVIDER_ID,
+          firebase.auth.EmailAuthProvider.PROVIDER_ID
+        ],
+        // Terms of service url.
+        tosUrl: '<https://google.com>'
+      };
+
+      // Initialize the FirebaseUI Widget using Firebase.
+      var ui = new firebaseui.auth.AuthUI(firebase.auth());
+      // The start method will wait until the DOM is loaded.
+      ui.start('#firebaseui-auth-container', uiConfig);
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+
+          var displayName = user.displayName;
+          var email = user.email
+
+          var update = {};
+          update["name"] = displayName;
+          update["nick"] = displayName;
+          update["email"] = email;
+          firebase.database().ref('users/'+user.uid).update(update);
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <!-- The surrounding HTML is left untouched by FirebaseUI.
+         Your app may use that space for branding, controls and other customizations.-->
+    <h1 align="center">MusicU Sign-in</h1>
+    <div id="firebaseui-auth-container"></div>
+  </body>
+</html>
