@@ -1,8 +1,5 @@
 /* MIDI STUFF */
 // Initialize the MIDI system
-// $("#main").hide();
-$("#landing").hide();
-
 var midisystem;
 
 // start midi system
@@ -222,21 +219,6 @@ document.querySelector("#reset-password").addEventListener("click", function (e)
   passReset.render();
 });
 
-// document.querySelector("#tab1").addEventListener("click", function(e) {
-//   e.preventDefault();
-//   $("#main").show();
-// });
-//
-// document.querySelector("#tab2").addEventListener("click", function(e) {
-//   e.preventDefault();
-//   $("#main").hide();
-// });
-//
-// document.querySelector("#tab3").addEventListener("click", function(e) {
-//   e.preventDefault();
-//   $("#main").hide();
-// });
-
 // Global firebase variables
 var pathToUser, currentUser, currentUserInfo,
   pathToOnline = 'online';
@@ -247,12 +229,9 @@ firebase.auth().onAuthStateChanged(function(user) {
   console.log('firebase state change: ' + JSON.stringify(user));
   if (user) {
     $("#login").hide();
-    // $("#main").show();
     $("#landing").show();
-    $("#user-menu").removeClass("hidden");
     currentUser = user; // user object
     pathToUser = 'users/' + currentUser.uid;
-
 
     // create user account form
     var userAccountForm = new UserAccountForm($("#modals"));
@@ -287,23 +266,16 @@ firebase.auth().onAuthStateChanged(function(user) {
       }
     });
 
-
-
     var onlineUsersModel = new userHandlingModel();
     var onlineUsersView = new userHandlingView(onlineUsersModel, $('#userlist'));
     var onlineUsersController = new userHandlingController(onlineUsersModel, onlineUsersView);
-
-
 
     // Create listener for offers from someone else
     firebase.database().ref(pathToSignaling + "/" + currentUser.uid + "/offers").on('child_added', offerReceived);
 
   } else {
     // User is logged out
-
-    $("#user-menu").addClass("hidden");
-    $("#landing").hide();
-    $("#main").hide().find("*").off(); //turn off all listeners
+    $("#landing").hide().find("*").off();
     $("#login").show('fast');
     $("#modals").find("*").off();  // turn off all modal listeners
   }
