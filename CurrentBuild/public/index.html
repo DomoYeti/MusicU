@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WebRTC p2p data</title>
+
+  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+  <script
+    src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+    crossorigin="anonymous">
+  </script>
+
+  <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous">
+  </script>
+
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyDWPm2FkgZQC5O22Lg8So50sTCSLY69UpI",
+      authDomain: "reactmusicu.firebaseapp.com",
+      databaseURL: "https://reactmusicu.firebaseio.com",
+      storageBucket: "reactmusicu.appspot.com",
+      messagingSenderId: "332805406271"
+    };
+    firebase.initializeApp(config);
+  </script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+
+
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a href="#" class="navbar-brand"><strong>Video & MIDI Chat</strong></a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" id="midi-menu" data-toggle="dropdown">
+              <strong>MIDI</strong>
+              <span class="glyphicon glyphicon-chevron-down"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="dropdown-header">MIDI In</li>
+              <li><a href="#" id="midiin">Not connected</a></li>
+              <li class="dropdown-header">MIDI Out</li>
+              <li><a href="#" id="midiout">Not connected</a></li>
+            </ul>
+          </li>
+          <li class="dropdown" id="user-menu">
+          </li>
+          <li><a href="#" id="logoutbutton2" onclick="logMeOut()">Log out</a></li>
+        </ul>
+      </div> <!--- myNavbar -->
+    </div> <!-- container-fluid -->
+  </nav>
+
+  <div class="container">
+    <!-- Login view -->
+    <div id="login">
+      <h2>Log in</h2>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <form data-toggle="validator" role="form">
+            <div class="form-group">
+              <label class="control-label" for="username">Email account:</label>
+              <input type="email" class="form-control" id="username" data-error="Email address is invalid" required>
+              <div class="help-block with-errors"></div>
+            </div>
+            <div class="form-group">
+              <label class="control-label" data-minlength="6" for="password">Password:</label>
+              <input type="password" class="form-control" id="password" required>
+            </div>
+            <div class="form-group">
+              <button type="submit" id="loginButton" class="btn btn-primary">Log in</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <p><a href="#" class="btn btn-default" id="sign-up">Sign up</a>&nbsp;<a href="#" class="btn btn-warning" id="reset-password">Reset password</a></p>
+    </div>
+
+    <!-- Landing Page -->
+    <div id="landing">
+      <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
+        <header class="mdl-layout__header">
+          <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">MusicU</span>
+          </div>
+          <!-- Tabs -->
+          <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+            <a href="#fixed-tab-1" class="mdl-layout__tab" id=tab1>Chat</a>
+            <a href="#fixed-tab-2" class="mdl-layout__tab" id=tab2>Record</a>
+            <a href="#fixed-tab-3" class="mdl-layout__tab is-active" id=tab3>Share</a>
+          </div>
+        </header>
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title">Layout drawer</span>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="#" id="logoutbutton" onclick="logMeOut()">Log out</a>
+            <a class="mdl-navigation__link" href="">Link</a>
+            <a class="mdl-navigation__link" href="">Link</a>
+            <a class="mdl-navigation__link" href="">Link</a>
+          </nav>
+        </div>
+        <main class="mdl-layout__content">
+          <section class="mdl-layout__tab-panel" id="fixed-tab-1">
+            <div class="page-content">
+              <!-- Your content goes here -->
+              <div class="row">
+                <div class="col-sm-6">
+                  <video id="remoteVideo" width="100%" autoplay controls muted></video>
+                </div>
+                <div class="col-sm-6">
+                  <video id="localVideo" class="localVideo" width="200" autoplay muted controls></video><br />
+                  <button type="button" id="hangUp" class="btn btn-sm btn-danger" onclick="hangUp()">Hang up</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <fieldset class="well">
+                    <p class="head muted">
+                      Chat window (active only if connected to a peer).
+                    </p>
+                    <div class="text-info" id="chatlog" style="height:250px; overflow:auto;">
+                    </div>
+                  </fieldset>
+                  <form class="form-inline" onSubmit="sendMessage();return false;" action="">
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="messageTextBox" placeholder="Type your message here">
+                      <button type="submit" class="btn btn-default" id="sendMessageBtn" class="btn">Send message</button>
+                    </div>
+                  </form>
+                </div>
+                <!-- List of online users -->
+                <div class="col-sm-6">
+                  <fieldset class="well">
+                    <p class="head muted">
+                      Online users.
+                    </p>
+                    <div class="text-info" id="userlist" style="height: 250px; overflow:auto">
+                    </div>
+                  </fieldset>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="mdl-layout__tab-panel" id="fixed-tab-2">
+            <div class="page-content">
+              <!-- Your content goes here -->
+
+            </div>
+          </section>
+          <section class="mdl-layout__tab-panel is-active" id="fixed-tab-3">
+            <div class="page-content"><!-- Your content goes here --></div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Streaming View -->
+    <!-- <div id="main">
+      <div class="row">
+        <div class="col-sm-6">
+          <video id="remoteVideo" width="100%" autoplay controls muted></video>
+        </div>
+        <div class="col-sm-6">
+          <video id="localVideo" class="localVideo" width="200" autoplay muted controls></video><br />
+          <button type="button" id="hangUp" class="btn btn-sm btn-danger" onclick="hangUp()">Hang up</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <fieldset class="well">
+            <p class="head muted">
+              Chat window (active only if connected to a peer).
+            </p>
+            <div class="text-info" id="chatlog" style="height:250px; overflow:auto;">
+            </div>
+          </fieldset>
+          <form class="form-inline" onSubmit="sendMessage();return false;" action="">
+            <div class="form-group">
+              <input type="text" class="form-control" id="messageTextBox" placeholder="Type your message here">
+              <button type="submit" class="btn btn-default" id="sendMessageBtn" class="btn">Send message</button>
+            </div>
+          </form>
+        </div> -->
+
+        <!-- List of online users -->
+        <!-- <div class="col-sm-6">
+          <fieldset class="well">
+            <p class="head muted">
+              Online users.
+            </p>
+            <div class="text-info" id="userlist" style="height: 250px; overflow:auto">
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div> -->
+
+  </div>
+
+  <!--- Modals   -->
+  <div id="modals"></div>
+
+  <script src="../js/bootbox.min.js"></script>
+  <script src="../js/validator.min.js"></script>
+  <script src="../js/MIDISystem.js"></script>
+  <script src="../js/userHandling.js"></script>
+  <script src="../js/SpEvent.js"></script>
+  <script src="../js/signaling-functions.js"></script>
+  <script src="../js/User.js"></script>
+  <script src="../js/main.js"></script>
+
+</body>
+</html>
