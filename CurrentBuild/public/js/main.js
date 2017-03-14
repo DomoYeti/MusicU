@@ -203,6 +203,7 @@ $('#login').on('submit',function(e) {
   });
 });
 
+/*
 // Add listeners to sign up button
 document.querySelector("#sign-up").addEventListener("click", function (e) {
   e.preventDefault();
@@ -218,6 +219,7 @@ document.querySelector("#reset-password").addEventListener("click", function (e)
   $('#login').hide();
   passReset.render();
 });
+*/
 
 // Global firebase variables
 var pathToUser, currentUser, currentUserInfo,
