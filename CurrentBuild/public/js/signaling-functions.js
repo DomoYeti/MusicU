@@ -1,6 +1,6 @@
 // Global variables
 
-var receiverUid; // stores the uid of Bob, the party receiving the offer. This global is ONLY used if you are Alice, the offerer 
+var receiverUid; // stores the uid of Bob, the party receiving the offer. This global is ONLY used if you are Alice, the offerer
 
 // WebRTC variables
 var cfg = {iceServers: [
@@ -39,14 +39,14 @@ var activedc;
 
 // Creates a local offer to be sent via firebase to the receiver. uid is the id of the receiver. Called when you click the nickname in the chatroom
 function createLocalOffer (uid) {
-  
+
   // If my online status is "unavailable", the abort
-  
+
   if (myStatus == 0) {
     bootbox.alert("You are currently on a call.");
     return false;
   }
-  
+
   receiverUid = uid;
   pc1 = new RTCPeerConnection(cfg);
   pc1.ontrack = handleOnaddstream;
@@ -77,13 +77,13 @@ function createLocalOffer (uid) {
       iceRef.set(JSON.stringify(e.candidate));
     },1000);
   };
-  
+
     // Create a listener for an answer from Bob
   firebase.database().ref(pathToSignaling + '/' + receiverUid + '/answers').on('child_added', answerListener);
-  
+
   // set up data channel for chat and midi
   setupDC1();
-    
+
   // Get camera stream for offerer (local video)
   navigator.mediaDevices.getUserMedia({video: { width: {max: 320}, height: {max: 240} }, audio: false})
   .then(function (stream) {
@@ -93,13 +93,13 @@ function createLocalOffer (uid) {
     var video = document.getElementById('localVideo');
     video.srcObject = stream;
     video.play();
-  
+
     // Set online status to "unavailable"
     myStatus = 0; // global variable
     var update = {};
     update[pathToOnline + "/" + currentUser.uid +"/status"] = 0;
     firebase.database().ref().update(update);
-    
+
     // Adding the stream will trigger a negotiationneeded event
     pc1.addStream(stream);
   });
@@ -129,7 +129,7 @@ function setupDC1 () {
   } catch (e) { console.warn('No data channel (pc1)', e); }
 }
 
-// Triggered when adding stream from Bob 
+// Triggered when adding stream from Bob
 function handleOnaddstream (e) {
   console.log('Got remote stream', e.streams);
   var remoteVideo = document.getElementById('remoteVideo');
@@ -147,7 +147,7 @@ function iceReceivedPc1(snapshot) {
   var can = new RTCIceCandidate(JSON.parse(snapshot.val()));
   pc1.addIceCandidate(can)
   .catch(function(error) {console.log("error when adding ice pc1", error);});
-  
+
 }
 
 // This is triggered when we add (or remove) a stream to pc1 and also when setting the data channel
@@ -176,7 +176,7 @@ function onnegotiationneeded (state) {
   }
 }
 
-// Gets triggered when Bob creates an answer. Triggered by firebase answer listener 
+// Gets triggered when Bob creates an answer. Triggered by firebase answer listener
 function answerListener(snapshot) {
   console.log('prelim answer', snapshot.val());
   if (snapshot.val()) {
@@ -188,7 +188,7 @@ function answerListener(snapshot) {
 
       // Limit bandwidth
       answerDesc.sdp = updateBandwidthRestriction(answerDesc.sdp, 250);
-      
+
       pc1.setRemoteDescription(answerDesc)
       .then (function() {
         // Create a Firebase listener for ICE candidates sent by pc2
@@ -209,46 +209,73 @@ function answerListener(snapshot) {
 
 
 /* ---------  BOB, the answerer  ---------*/
+var pc2 = null,
+dc2 = null;
 
-
-var pc2=null,
-  dc2 = null;
-
-
+var dialog = document.querySelector('dialog');
+if (! dialog.showModal) {
+  dialogPolyfill.registerDialog(dialog);
+}
 // Handler for when someone creates an offer to you in the firebase database. Listener is defined right after log in
 function offerReceived(snapshot) {
   if (snapshot.val()) {
     var snap = snapshot.val();
+    dialog.showModal();
+    console.log("This path Exists!!!!! --> I have an Offer from someone")
 
-    answerTheOffer(snap.localdescription);
-    
-      // Now we DON'T have the option to reject offer!!! DELETE
-      //bootbox.confirm({
-      //  message: "You just got a call from " + snap.offerer,
-      //    buttons: {
-      //      confirm: {
-      //        label: 'Accept',
-      //        className: 'btn-success'
-      //      },
-      //      cancel: {
-      //        label: 'Reject',
-      //        className: 'btn-danger'
-      //      },
-      //    },
-      //  callback: function(result) {
-      //    if (result) {
-      //      // console.log(snap);
-      //      answerTheOffer(snap.localdescription);
-      //    } else {
-      //      console.log("Call rejected");
-      //      // enter a -1 for answer to the offer
-      //      var update ={answer: -1};
-      //      firebase.database().ref(pathToSignaling + "/" + currentUser.uid).update(update);
-      //    }
-      //  }
-      //}); 
+    $("#accept-button").bind('click', function() {
+      console.log("Now Accepting the Offer");
+      answerTheOffer(snap.localdescription);
+      dialog.close();
+    });
+    $("#decline-button").bind('click', function() {
+      console.log("Now Declining the Offer");
+      purgeOffer();
+      // Fix some stuff here, no answer has been created yet
+      dialog.close();
+    });
+  }
+}
 
-    
+function purgeOffer() {
+
+  var update = {};
+  update[pathToSignaling + "/" + receiverUid]  = null;
+  // Delete any offer left over
+  firebase.database().ref().update(update)
+  .then(function() {
+   // set status to online
+    myStatus = 1;
+    var update = {};
+    update[pathToOnline + "/" + currentUser.uid + "/status"] = 1;
+    firebase.database().ref().update(update);
+  });
+
+  if (localTracks) {
+    localTracks.forEach(function (track) {
+      track.stop();
+    });
+  }
+  if (pc1 && pc1.getLocalStreams) {
+    pc1.getLocalStreams().forEach(function(stream){
+      pc1.removeStream(stream);
+    });
+  }
+
+  if (pc2 && pc2.getLocalStreams) {
+    pc2.getLocalStreams().forEach(function(stream){
+      pc2.removeStream(stream);
+    });
+  }
+
+  activedc && activedc.close();
+  if (pc1 && pc1.signalingState != 'closed') {
+      pc1.close();
+      setTimeout(function() {pc1 = null;}, 1000)
+  }
+   if (pc2 && pc2.signalingState != 'closed') {
+      pc2.close();
+      setTimeout(function() {pc2 = null;}, 1000)
   }
 }
 
@@ -258,13 +285,13 @@ function answerTheOffer(offerString) {
   // we need to STOP the local camera stream if it already exists, since a new stream is created here for a second time.
   // Otherwise we end up with the 2 local streams for the local camera, which makes it impossible to "kill" when hanging up
   // Only ONE stream of the camera must exist
-  
+
   if (localTracks) {
     localTracks.forEach(function (track) {
-      track.stop();  
+      track.stop();
     });
-  } 
-  
+  }
+
   if (!pc2) {
     pc2 = new RTCPeerConnection(cfg);
     pc2.ontrack = handleOnaddstream;
@@ -279,26 +306,26 @@ function answerTheOffer(offerString) {
     pc2.onconnectionstatechange = function (e) {
       console.info('connection state change:', e);
     };
-    pc2.ondatachannel = handleOnDataChannel; 
+    pc2.ondatachannel = handleOnDataChannel;
   }
-  
+
   pc2.onicecandidate = function (e) {
     console.log('ICE candidate (pc2)', e);
     if (!e.candidate) {
       console.log('returning cause not candidate',e);
       return;
     }
-    // send ice candidate to offerer through Firebase. TImeout seems to work well here to give time for initial connection to be established 
+    // send ice candidate to offerer through Firebase. TImeout seems to work well here to give time for initial connection to be established
     setTimeout(function() {
       var iceRef = firebase.database().ref(pathToSignaling + '/' + currentUser.uid + '/ice-to-offerer').push();
-      iceRef.set(JSON.stringify(e.candidate)); 
+      iceRef.set(JSON.stringify(e.candidate));
     }, 1000);
-  };  
-  
+  };
+
   var offerDesc = JSON.parse(offerString);
   // Limit bandwidth
   offerDesc.sdp = updateBandwidthRestriction(offerDesc.sdp, 250);
-  
+
   pc2.setRemoteDescription(offerDesc)
   .then(function() {
     writeToChatLog('Received remote offer','text-success');
@@ -310,18 +337,18 @@ function answerTheOffer(offerString) {
     var update = {};
     update[pathToOnline + "/" + currentUser.uid +"/status"] = 0;
     firebase.database().ref().update(update);
-    
+
     // Store tracks and stream in globals to kill them when hanging up
     localTracks = stream.getTracks();
     localStream = stream;
-    
-    // Attach stream to video element 
+
+    // Attach stream to video element
     var video = document.getElementById('localVideo');
     video.srcObject = stream;
-    
+
     // Add (local) stream to peer connection
     pc2.addStream(stream);
-    
+
     // Create answer
     return pc2.createAnswer();
   })
@@ -336,7 +363,7 @@ function answerTheOffer(offerString) {
     // Add an answer to firebase
     var answerRef = firebase.database().ref(pathToSignaling + '/' + currentUser.uid + '/answers').push();
     answerRef.set(JSON.stringify(pc2.localDescription));
-    
+
     // Add listener for ICE candidates from pc1
     firebase.database().ref(pathToSignaling + '/' + currentUser.uid + '/ice-to-answerer').on('child_added', iceReceivedPc2);
 
@@ -369,7 +396,7 @@ function handleOnDataChannel (e) {
       $('#chatlog').scrollTop($('#chatlog')[0].scrollHeight);
     } else { // we got a midi message!
       midisystem.selectedMidiOutput.send([data.message[0], data.message[1], data.message[2]]);
-    }    
+    }
   };
 }
 

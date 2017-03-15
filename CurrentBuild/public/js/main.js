@@ -1,13 +1,22 @@
-/* MIDI STUFF */
+//Hide and show proper views when arriving at the site
+$(document).ready(function() {
+  $("#mainlink").click(function() {
+    $('#submenu').toggle('show');
+  });
+});
+
+window.onload = function(e){
+  $('#submenu').toggle('show');
+  $("#landing").hide();
+};
+
+
 // Initialize the MIDI system
 var midisystem;
-
-// start midi system
 navigator.requestMIDIAccess && navigator.requestMIDIAccess().then(
   function success(midiAccess) {
 	// Initialize MIDI system
 	midisystem = new MidiSystem(midiAccess);
-
   // Create a MIDI listener
   midisystem.stateChange.attach(function () {
     console.log("created MIDI listener for", midisystem.selectedMidiInput.name);
@@ -35,23 +44,7 @@ function onMidiMessage(receivedEvent) {
   }
 }
 
-/* End of MIDI Stuff */
-
-
 /*  --------FIREBASE STUFF--------- */
-
-// Initialize Firebase
-//   var config = {
-//     apiKey: "AIzaSyDPAkDdEzEzEut4DeuFvY9VSwoy2JaJAq8",
-//     authDomain: "musicu-625c8.firebaseapp.com",
-//     databaseURL: "https://musicu-625c8.firebaseio.com",
-//     storageBucket: "musicu-625c8.appspot.com",
-//     messagingSenderId: "1052942824498"
-//   };
-// firebase.initializeApp(config);
-// -----------------------------------
-// Log out
-
 function logMeOut() {
   if (firebase.auth().currentUser) {
     if (!receiverUid) {
@@ -123,8 +116,6 @@ function logMeOut() {
   }
 }
 
-// --------------------------------
-// Hang up
 function hangUp() {
   // First take care of offer and online status
   if (currentUser) {

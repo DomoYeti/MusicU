@@ -249,7 +249,7 @@ Online users.
 <!-- </div> -->
 
 
-<script>
+<!-- <script>
 $(document).ready(function() {
   $("#mainlink").click(function() {
     $('#submenu').toggle('show');
@@ -260,9 +260,22 @@ window.onload = function(e){
   $('#submenu').toggle('show');
   $("#landing").hide();
 };
-</script>
+</script> -->
 
 <!--- Modals   -->
+
+<dialog class="mdl-dialog">
+  <div class="mdl-dialog__content">
+    <p>
+      You have a call from a peer!
+    </p>
+  </div>
+  <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+    <button type="button" class="mdl-button" id=accept-button>Accept</button>
+    <button type="button" class="mdl-button" id=decline-button>Decline</button>
+  </div>
+</dialog>
+
 <div id="modals"></div>
 
 <script src="../js/bootbox.min.js"></script>
