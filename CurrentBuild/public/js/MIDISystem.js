@@ -1,5 +1,5 @@
 function MidiSystem(midiAccess) {
-  
+
   this.midiAccess = midiAccess;
   this.selectedMidiInput = {};
   this.selectedMidiOutput = {};
@@ -15,12 +15,12 @@ function MidiSystem(midiAccess) {
     });
     if (midiInputIDs[0]) {
       this.selectedMidiInput = this.midiAccess.inputs.get(midiInputIDs[0]);
-      $("#midiin").html(_this.selectedMidiInput.name);
-      document.querySelector("#midi-menu").style ="";
+      // $("#midiin").html(_this.selectedMidiInput.name);
+      // document.querySelector("#midi-menu").style ="";
     } else {
       this.selectedMidiInput = {};
-      $("#midiin").html("Disconnected");
-      document.querySelector("#midi-menu").style.color = "red";
+      // $("#midiin").html("Disconnected");
+      // document.querySelector("#midi-menu").style.color = "red";
     }
   };
 
@@ -31,25 +31,25 @@ function MidiSystem(midiAccess) {
     });
     if (midiOutputsIDs[0]) {
       this.selectedMidiOutput = this.midiAccess.outputs.get(midiOutputsIDs[0]);
-      $("#midiout").html(_this.selectedMidiOutput.name);
-      document.querySelector("#midi-menu").style ="";
+      // $("#midiout").html(_this.selectedMidiOutput.name);
+      // document.querySelector("#midi-menu").style ="";
     } else {
       this.selectedMidiOutput = {};
-      $("#midiout").html("Disconnected");
-      document.querySelector("#midi-menu").style.color ="red";
+      // $("#midiout").html("Disconnected");
+      // document.querySelector("#midi-menu").style.color ="red";
     }
   };
-  
-  
+
+
   this.MIDIStateChange= function(event) {
     _this.getInputs();
     _this.getOutputs();
     console.log("MIDI State Change on port: "+event.port);
     console.log("MIDI State Change state: "+event.port.state);
     _this.stateChange.notify(event); // receivers need to check event.port.type (input, output)
-                                  //and event.port.state (when state changes, something got disconnected 
+                                  //and event.port.state (when state changes, something got disconnected
   };
-  
+
   this.init= function() {
     this.getInputs();
     this.getOutputs();
@@ -57,4 +57,3 @@ function MidiSystem(midiAccess) {
     this.stateChange.notify();
   }
 }
-
