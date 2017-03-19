@@ -51,7 +51,6 @@
           // Terms of service url.
           tosUrl: '<your-tos-url>'
         };
-<<<<<<< HEAD
         // Initialize the FirebaseUI Widget using Firebase.
         var ui = new firebaseui.auth.AuthUI(firebase.auth());
         // The start method will wait until the DOM is loaded.
@@ -70,29 +69,6 @@
     </script>
 
 
-=======
-
-        // Initialize the FirebaseUI Widget using Firebase.
-        var ui = new firebaseui.auth.AuthUI(firebase.auth());
-        // The start method will wait until the DOM is loaded.
-        ui.start('#login', uiConfig);
-        firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-
-          var displayName = user.displayName;
-          var email = user.email
-
-          var update = {};
-          update["name"] = displayName;
-          update["nick"] = displayName;
-          update["email"] = email;
-          firebase.database().ref('users/'+user.uid).update(update);
-        }
-      });
-    </script>
-
-
->>>>>>> origin/master
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -152,7 +128,7 @@
       <!-- Tabs -->
       <div class="mdl-layout__tab-bar mdl-js-ripple-effect" id="tab-id">
         <a href="#fixed-tab-1" class="mdl-layout__tab" id=tab1>Chat</a>
-        <a href="#fixed-tab-2" class="mdl-layout__tab is-active" id=tab2>NewsFeed</a>
+        <a href="#fixed-tab-2" class="mdl-layout__tab is-active" id=tab2>Newsfeed</a>
         <a href="#fixed-tab-3" class="mdl-layout__tab" id=tab3>Record</a>
       </div>
     </header>
@@ -174,7 +150,6 @@
     <main class="mdl-layout__content">
       <section class="mdl-layout__tab-panel" id="fixed-tab-1">
         <div class="page-content">
-<<<<<<< HEAD
             <div class="mdl-grid">
             <div class="mdl-cell mdl-cell--6-col">
               <style>
@@ -198,16 +173,6 @@
                 </div>
                 </div>
               </div>
-=======
-          <!-- Your content goes here -->
-          <div class="row">
-            <div class="col-sm-6">
-              <video id="remoteVideo" width="100%" autoplay controls muted></video>
-            </div>
-            <div class="col-sm-6">
-              <video id="localVideo" class="localVideo" width="200" autoplay muted controls></video><br />
-              <button type="button" id="hangUp" class="btn btn-sm btn-danger" onclick="hangUp()">Hang up</button>
->>>>>>> origin/master
             </div>
             <div class="mdl-cell mdl-cell--6-col">
               <style>
@@ -276,7 +241,6 @@
 <video id="localVideo" class="localVideo" width="200" autoplay muted controls></video><br />
 <button type="button" id="hangUp" class="btn btn-sm btn-danger" onclick="hangUp()">Hang up</button>
 </div>
-<<<<<<< HEAD
 </div>
 <div class="row">
 <div class="col-sm-6">
@@ -305,36 +269,6 @@ Online users.
 </div>
 </fieldset>
 </div>
-=======
-</div>
-<div class="row">
-<div class="col-sm-6">
-<fieldset class="well">
-<p class="head muted">
-Chat window (active only if connected to a peer).
-</p>
-<div class="text-info" id="chatlog" style="height:250px; overflow:auto;">
-</div>
-</fieldset>
-<form class="form-inline" onSubmit="sendMessage();return false;" action="">
-<div class="form-group">
-<input type="text" class="form-control" id="messageTextBox" placeholder="Type your message here">
-<button type="submit" class="btn btn-default" id="sendMessageBtn" class="btn">Send message</button>
-</div>
-</form>
-</div> -->
-
-<!-- List of online users -->
-<!-- <div class="col-sm-6">
-<fieldset class="well">
-<p class="head muted">
-Online users.
-</p>
-<div class="text-info" id="userlist" style="height: 250px; overflow:auto">
-</div>
-</fieldset>
-</div>
->>>>>>> origin/master
 </div>
 </div> -->
 
@@ -347,10 +281,6 @@ $(document).ready(function() {
     $('#submenu').toggle('show');
   });
 });
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 window.onload = function(e){
   $('#submenu').toggle('show');
   $("#landing").hide();
