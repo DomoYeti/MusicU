@@ -25,13 +25,13 @@ var myStatus = 1; // Available by default
 // activedc tracks which of the two possible datachannel variables we're using.
 var activedc;
 
-// var sdpConstraints = {
-//   optional: [],
-//   mandatory: {
-//     OfferToReceiveAudio: true,
-//     OfferToReceiveVideo: true
-//   }
-// }
+// Put variables in global scope to make them available to the browser console.
+var audio = document.querySelector('audio');
+
+var constraints = window.constraints = {
+  audio: true,
+  video: true
+};
 
 
 
