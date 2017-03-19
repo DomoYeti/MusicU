@@ -25,15 +25,6 @@ var myStatus = 1; // Available by default
 // activedc tracks which of the two possible datachannel variables we're using.
 var activedc;
 
-// var sdpConstraints = {
-//   optional: [],
-//   mandatory: {
-//     OfferToReceiveAudio: true,
-//     OfferToReceiveVideo: true
-//   }
-// }
-
-
 
 /* -------  OFFER (Alice) ---------- */
 
@@ -85,7 +76,7 @@ function createLocalOffer (uid) {
   setupDC1();
 
   // Get camera stream for offerer (local video)
-  navigator.mediaDevices.getUserMedia({video: { width: {max: 320}, height: {max: 240} }, audio: false})
+  navigator.mediaDevices.getUserMedia({video: { width: {max: 320}, height: {max: 240} }, audio: true})
   .then(function (stream) {
     localTracks = stream.getTracks();
     localStream = stream;
@@ -329,7 +320,7 @@ function answerTheOffer(offerString) {
   pc2.setRemoteDescription(offerDesc)
   .then(function() {
     writeToChatLog('Received remote offer','text-success');
-    return navigator.mediaDevices.getUserMedia({video: { width: {max: 320}, height: {max: 240} }, audio: false});
+    return navigator.mediaDevices.getUserMedia({video: { width: {max: 320}, height: {max: 240} }, audio: true});
   })
   .then(function (stream) {
     // Set online status to unavailable
