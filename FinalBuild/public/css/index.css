@@ -1,0 +1,268 @@
+* {
+  box-sizing: border-box;
+}
+.video-container {
+  height: 0;
+  padding-top: 0px;
+  padding-bottom: 50.1%;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+  background-color: black;
+}
+.remoteVideo {
+  width: 100%;
+  height: auto;
+  border:1px solid blue;
+  position: absolute;
+}
+.localVideo {
+  width: 25%;
+  height: auto;
+  border:1px solid orange;
+  float: left;
+  position: absolute;
+  background-color: grey;
+}
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+[class*="col-"] {
+  float: left;
+  padding: 15px;
+}
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+.demo-list-two {
+  width: auto;
+}
+.mdl-data-table {
+  width: 100%;
+}
+.mdl-data-table__cell--non-numeric {
+  width: 100%;
+}
+.chatbox {
+  float: center;
+}
+.chatWrapper {
+  width: 100%;
+  height: auto;
+  margin-top: 15px;
+  background-color: white;
+}
+.callChatWrapper {
+  width: 100%;
+  height: auto;
+}
+.chatLogWrapper {
+  height: 400px;
+  width: 100%;
+  overflow: auto;
+  padding: 20px;
+}
+.chatFormWrapper {
+  height: auto;
+  width: 100%;
+  padding: 20px;
+}
+.mdl-textfield {
+  width: 85%;
+  margin-right: 20px;
+}
+.chatMessageBoxWrapper {
+  float: bottom;
+}
+.localChatMessage {
+  width: auto;
+  max-width: 45%;
+  word-wrap: break-word;
+  float: left;
+  text-align: left;
+  margin-right: 51%;
+  color: green !important;
+}
+.remoteChatMessage {
+  width: auto;
+  max-width: 45%;
+  word-wrap: break-word;
+  float: right;
+  text-align: left;
+  margin-left: 51%;
+  color: red !important;
+}
+.systemChatMessage {
+  width: auto;
+  max-width: 45%;
+  word-wrap: break-word;
+  float: left;
+  text-align: left;
+  margin-right: 51%;
+  color: blue !important;
+}
+.mdl-chip {
+  width: 100%;
+}
+.mdl-chip-convos {
+  width: auto;
+}
+.mdl-chip-mini-offline {
+  width: 48%;
+  display: none;
+}
+.mdl-chip-mini-online {
+  width: 32%;
+  display: none;
+}
+.mdl-chip__contact {
+  float: left;
+}
+.userListWrapper {
+  hieght: auto;
+  max-height: 600px;
+  overflow: auto;
+  padding: 10px;
+  background-color: white;
+}
+.hangUpButton {
+  width: 200px;
+  margin-left: calc(50% - 100px);
+}
+.conversationsArray {
+  height: 40px;
+  overflow-x: scroll;
+  overflow-y: none;
+  white-space: nowrap;
+}
+.badge1 {
+  position:relative;
+  display: inline-block;
+  background: black;
+  color: white;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-top: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 5px;
+  height: 100%
+}
+.badge1[data-badge]:after {
+  content:attr(data-badge);
+  position:absolute;
+  top:-10px;
+  right:-10px;
+  font-size:.7em;
+  background:red;
+  color:white;
+  width:18px;height:18px;
+  text-align:center;
+  line-height:18px;
+  border-radius:50%;
+  box-shadow:0 0 1px #333;
+}
+.createPostForm {
+  display: none;
+}
+.createGroupForm {
+  display: none;
+}
+.groupMembersContainer {
+  position: relative;
+  display: block;
+
+}
+.groupMembersText {
+  width: 200px;
+  height: 50px;
+  text-align: center;
+  background-color: grey;
+  vertical-align: middle;
+  line-height: 50px;
+
+}
+.groupMembersContent {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  width: 200px;
+  overflow: auto;
+  max-height: 200px;
+  z-index: 1;
+
+}
+.groupMembersList {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+}
+.groupMembersContainer:hover .groupMembersContent {
+  display: block;
+}
+.listItem {
+  display: block;
+  width: 100%;
+  padding-top: 20px;
+  text-align: center;
+}
+.listItem:hover {
+  background-color: #dfe3ee;
+}
+.groupRequestsContainer {
+  position: relative;
+  display: block;
+
+}
+.groupRequestsText {
+  width: 200px;
+  height: 50px;
+  text-align: center;
+  background-color: grey;
+  vertical-align: middle;
+  line-height: 50px;
+
+}
+.groupRequestsContent {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  width: 200px;
+  overflow: auto;
+  max-height: 200px;
+  z-index: 1;
+}
+.groupRequestsList {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+}
+.groupRequestsContainer:hover .groupRequestsContent {
+  display: block;
+}
+.currentGroupContainer {
+  vertical-align: middle;
+  background-color: white;
+}
+
+
+thead, tbody { display: block; }
+tbody {
+  height: auto;
+  max-height: 1000px
+  overflow-y: auto;    /* Trigger vertical scroll    */
+  overflow-x: none;
+}
