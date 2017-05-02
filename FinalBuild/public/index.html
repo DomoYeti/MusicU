@@ -1,0 +1,669 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WebRTC p2p data</title>
+
+  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+  <script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous">
+  </script>
+
+  <script
+  src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+  integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+  crossorigin="anonymous">
+  </script>
+
+  <script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCBzvfzhyXImjy4COCGzJb3B8BFtCh6id4",
+    authDomain: "musicu-d4bc8.firebaseapp.com",
+    databaseURL: "https://musicu-d4bc8.firebaseio.com",
+    projectId: "musicu-d4bc8",
+    storageBucket: "musicu-d4bc8.appspot.com",
+    messagingSenderId: "491185288250"
+  };
+  firebase.initializeApp(config);
+  firebase.initializeApp(config);
+  </script>
+
+  <script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
+
+  <script type="text/javascript">
+  // FirebaseUI config.
+  var uiConfig = {
+    signInSuccessUrl: 'index.html',
+    signInOptions: [
+      // Leave the lines as is for the providers you want to offer your users.
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+      firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+      firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+      firebase.auth.GithubAuthProvider.PROVIDER_ID,
+      firebase.auth.EmailAuthProvider.PROVIDER_ID
+    ],
+    // Terms of service url.
+    tosUrl: '<your-tos-url>'
+  };
+  // Initialize the FirebaseUI Widget using Firebase.
+  var ui = new firebaseui.auth.AuthUI(firebase.auth());
+  // The start method will wait until the DOM is loaded.
+  ui.start('#login', uiConfig);
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      var displayName = user.displayName;
+      var email = user.email
+      var update = {};
+      update["name"] = displayName;
+      update["nick"] = displayName;
+      update["email"] = email;
+      firebase.database().ref('users/'+user.uid).update(update);
+    }
+  });
+  </script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <link rel="stylesheet" src="../css/index.css">
+
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+  .video-container {
+    height: 0;
+    padding-top: 0px;
+    padding-bottom: 50.1%;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+    background-color: black;
+  }
+  .remoteVideo {
+    width: 100%;
+    height: auto;
+    border:1px solid blue;
+    position: absolute;
+  }
+  .localVideo {
+    width: 25%;
+    height: auto;
+    border:1px solid orange;
+    float: left;
+    position: absolute;
+    background-color: #afb7ba;
+  }
+  .row::after {
+    content: "";
+    clear: both;
+    display: table;
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  [class*="col-"] {
+    float: left;
+    padding: 15px;
+  }
+  .col-1 {width: 8.33%;}
+  .col-2 {width: 16.66%;}
+  .col-3 {width: 25%;}
+  .col-4 {width: 33.33%;}
+  .col-5 {width: 41.66%;}
+  .col-6 {width: 50%;}
+  .col-7 {width: 58.33%;}
+  .col-8 {width: 66.66%;}
+  .col-9 {width: 75%;}
+  .col-10 {width: 83.33%;}
+  .col-11 {width: 91.66%;}
+  .col-12 {width: 100%;}
+  .demo-list-two {
+    width: auto;
+  }
+  .mdl-data-table {
+    width: 100%;
+  }
+  .mdl-data-table__cell--non-numeric {
+    width: 100%;
+  }
+  .chatbox {
+    float: center;
+  }
+  .chatWrapper {
+    width: 100%;
+    height: auto;
+    margin-top: 15px;
+    background-color: white;
+  }
+  .callChatWrapper {
+    width: 100%;
+    height: auto;
+  }
+  .chatLogWrapper {
+    height: 400px;
+    width: 100%;
+    overflow: auto;
+    padding: 20px;
+  }
+  .chatFormWrapper {
+    height: auto;
+    width: 100%;
+    padding: 20px;
+  }
+  .mdl-textfield {
+    width: 85%;
+    margin-right: 20px;
+  }
+  .chatMessageBoxWrapper {
+    float: bottom;
+  }
+  .localChatMessage {
+    width: auto;
+    max-width: 45%;
+    word-wrap: break-word;
+    float: left;
+    text-align: left;
+    margin-right: 51%;
+    color: green !important;
+  }
+  .remoteChatMessage {
+    width: auto;
+    max-width: 45%;
+    word-wrap: break-word;
+    float: right;
+    text-align: left;
+    margin-left: 51%;
+    color: red !important;
+  }
+  .systemChatMessage {
+    width: auto;
+    max-width: 45%;
+    word-wrap: break-word;
+    float: left;
+    text-align: left;
+    margin-right: 51%;
+    color: blue !important;
+  }
+  .mdl-chip {
+    width: 100%;
+  }
+  .mdl-chip-convos {
+    width: auto;
+  }
+  .mdl-chip-mini-offline {
+    width: 48%;
+    display: none;
+  }
+  .mdl-chip-mini-online {
+    width: 32%;
+    display: none;
+  }
+  .mdl-chip__contact {
+    float: left;
+  }
+  .userListWrapper {
+    hieght: auto;
+    max-height: 600px;
+    overflow: auto;
+    padding: 10px;
+    background-color: white;
+  }
+  .hangUpButton {
+    width: 200px;
+    margin-left: calc(50% - 100px);
+  }
+  .conversationsArray {
+    height: 40px;
+    overflow-x: scroll;
+    overflow-y: none;
+    white-space: nowrap;
+  }
+  .badge1 {
+    position:relative;
+    display: inline-block;
+    background: black;
+    color: white;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-top: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 5px;
+    height: 100%
+  }
+  .badge1[data-badge]:after {
+    content:attr(data-badge);
+    position:absolute;
+    top:-10px;
+    right:-10px;
+    font-size:.7em;
+    background:red;
+    color:white;
+    width:18px;height:18px;
+    text-align:center;
+    line-height:18px;
+    border-radius:50%;
+    box-shadow:0 0 1px #333;
+  }
+  .createGroupForm {
+    display: none;
+  }
+  .groupMembersContainer {
+    position: relative;
+    display: inline-block;
+    width: 33%;
+
+  }
+  .groupMembersText {
+    width: 100%;
+    height: 36px;
+    text-align: center;
+    background-color: rgb(63,81,181);
+    vertical-align: middle;
+    line-height: 36px;
+    color: white;
+    border-radius: 2px;
+
+  }
+  .groupMembersContent {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    width: 100%;
+    overflow: auto;
+    max-height: 200px;
+    z-index: 1;
+
+  }
+  .groupMembersList {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+  }
+  .groupMembersContainer:hover .groupMembersContent {
+    display: block;
+  }
+  .listItem {
+    display: block;
+    width: 100%;
+    padding-top: 20px;
+    text-align: center;
+  }
+  .listItem:hover {
+    background-color: #dfe3ee;
+  }
+  .groupRequestsContainer {
+    position: relative;
+    display: inline-block;
+    width: 33%;
+
+  }
+  .groupRequestsText {
+    width: 100%;
+    height: 36px;
+    text-align: center;
+    background-color: rgb(63,81,181);
+    vertical-align: middle;
+    line-height: 36px;
+    color: white;
+    border-radius: 2px;
+
+  }
+  .groupRequestsContent {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    width: 100%;
+    overflow: auto;
+    max-height: 200px;
+    z-index: 1;
+  }
+  .groupRequestsList {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+  }
+  .groupRequestsContainer:hover .groupRequestsContent {
+    display: block;
+  }
+  .currentGroupContainer {
+  }
+  .mdl-grid.gridContainer {
+    justify-content: center;
+  }
+  .currentGroupHeaderStyle {
+    background-color: white;
+    height: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  .groupBackButtonContainer {
+    width: 100%;
+    justify-content: center;
+    padding-bottom: 20px;
+    text-align: center;
+  }
+  .groupBackButton {
+    display: inline-block;
+    width: 50%;
+    justify-content: center;
+  }
+  .groupImage {
+    width: 100%;
+    height: 100%;
+  }
+  .groupDescription {
+    overflow: auto;
+    max-height: 100px;
+  }
+  .groupHeader {
+    margin: 0px;
+  }
+  .postButtonContainer {
+    width: 100%;
+    justify-content: center;
+    margin-top: 20px;
+    text-align: center;
+  }
+  .postButton {
+    display: inline-block;
+    width: 100%;
+    justify-content: center;
+  }
+  .createPostForm {
+    display: none;
+    background-color: white;
+    padding: 20px;
+  }
+  .commentContainer {
+    background-color: #afb7ba;
+  }
+  .singlePost {
+    background-color: white;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  .row {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  .commentInput {
+    background-color: white;
+  }
+  .commentFeed {
+    overflow: auto;
+    height: auto;
+    max-height: 150px;
+  }
+  .commentStyle {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .createGroupButton {
+    width: 49%;
+  }
+  .joinGroupButton {
+    width: 49%;
+  }
+  .myGroupsNav {
+    width: 100%;
+    height: auto;
+  }
+  .myGroupsList {
+    background-color: white;
+    height: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+
+  thead, tbody { display: block; }
+  tbody {
+    height: auto;
+    max-height: 1000px
+    overflow-y: auto;    /* Trigger vertical scroll    */
+    overflow-x: none;
+  }
+  </style>
+
+</head>
+<body style="background-color:#dfe3ee">
+
+  <!-- Login view -->
+  <div id="login">
+    <h1 align="center">MusicU Login</h1>
+  </div>
+
+  <!-- Landing Page -->
+  <div id="landing">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <!-- Title -->
+          <span class="mdl-layout-title">MusicU</span>
+        </div>
+        <!-- Tabs -->
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect" id="tab-id">
+          <a href="#fixed-tab-1" class="mdl-layout__tab is-active" id=tab1>Chat</a>
+          <a href="#fixed-tab-2" class="mdl-layout__tab" id=tab2>Groups</a>
+          <a href="#fixed-tab-3" class="mdl-layout__tab" id=tab3>Record</a>
+        </div>
+      </header>
+
+      <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Layout drawer</span>
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" href="">My Account</a>
+          <a href="#" id="mainlink" class="mdl-navigation__link">MIDI</a>
+          <!-- sub menu  -->
+          <nav id="submenu" class="mdl-navigation">
+            <a class="mdl-navigation__link">MIDI info 1</a>
+            <a class="mdl-navigation__link">MIDI info 2</a>
+          </nav>
+          <a class="mdl-navigation__link" href="#" id="logoutbutton" onclick="logMeOut()">Sign out</a>
+        </nav>
+      </div>
+
+      <main class="mdl-layout__content">
+        <section class="mdl-layout__tab-panel is-active" style="background-color:#dfe3ee" id="fixed-tab-1">
+          <div class="page-content">
+            <div class="mdl-grid">
+              <div class="mdl-cell mdl-cell--9-col">
+
+                <div class="video-container">
+                  <video id="remoteVideo"  class="remoteVideo" autoplay controls></video>
+                  <video id="localVideo" class="localVideo" autoplay muted></video>
+                </div>
+
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored hangUpButton" onclick="hangUp()">
+                  Hang Up
+                </button>
+
+                <div class="chatWrapper mdl-shadow--2dp">
+
+                  <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+                    <div class="mdl-tabs__tab-bar">
+                      <a href="#panel1" class="mdl-tabs__tab is-active">Live Call Text Chat</a>
+                      <a href="#panel2" class="mdl-tabs__tab">Your Conversations</a>
+                    </div>
+
+                    <div class="mdl-tabs__panel is-active callChatWrapper mdl-shadow--2dp" id="panel1">
+
+
+                      <div class="chatLogWrapper" id="chatlog"></div>
+
+                      <div class="chatFormWrapper mdl-shadow--2dp">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                          <input class="mdl-textfield__input" id="messageTextBox" type="text">
+                          <label class="mdl-textfield__label" for="message">Say something here ...</label>
+                        </div>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="sendMessageBtn" onclick="sendMessage()">
+                          Send
+                        </button>
+                      </div>
+
+                    </div>
+
+                    <div class="mdl-tabs__panel callChatWrapper mdl-shadow--2dp" id="panel2">
+
+                      <!-- <div class="conversationsArray" id="conversationsArrayTarget"></div> -->
+                      <ul class="conversationsArray" id="conversationsArrayTarget"></ul>
+
+                      <div class="chatLogWrapper" id="currentConvoTarget">
+                        <p>Select one of your conversation or create a new conversation from the User List</p>
+                      </div>
+
+                      <div class="chatFormWrapper mdl-shadow--2dp">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                          <input class="mdl-textfield__input" id="convoTextForm" type="text">
+                          <label class="mdl-textfield__label">Say something here ...</label>
+                        </div>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="sendConvoMessageBtn" onclick="sendGeneralMessage()">
+                          Send
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="deleteConversation" onclick="deleteConversation()">
+                          Delete Conversation
+                        </button>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div class="mdl-cell mdl-cell--3-col mdl-cell--9--phone">
+                <div class="userListWrapper mdl-shadow--2dp">
+
+                  <div id="onlineUserListTarget">
+
+                  </div>
+
+                  <div id="offlineUserListTarget">
+
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="mdl-layout__tab-panel" style="background-color:#dfe3ee" id="fixed-tab-2">
+          <div class="page-content">
+
+            <div class="mdl-grid gridContainer">
+              <div class="mdl-cell mdl-cell--8-col mdl-cell--middle">
+                <div id="myGroups"></div>
+              </div>
+              <div class="mdl-cell mdl-cell--8-col mdl-cell--middle">
+                <div id="joinGroups" style="display:none"></div>
+              </div>
+              <div class="mdl-cell mdl-cell--8-col mdl-cell--middle currentGroupContainer">
+                <div id="currentGroupHeader">
+                </div>
+                <div id="currentGroupPostFeed" class="currentGroupPostFeed">
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="mdl-layout__tab-panel" id="fixed-tab-3">
+          <div class="page-content"><!-- Your content goes here --></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!--- Modals   -->
+  <dialog id="receivedCallDialog" class="mdl-dialog">
+    <div class="mdl-dialog__content">
+      <p>
+        Someone's calling you!
+      </p>
+    </div>
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+      <button type="button" class="mdl-button" id=accept-call-button>Accept</button>
+      <button type="button" class="mdl-button" id=decline-call-button>Decline</button>
+    </div>
+  </dialog>
+
+  <dialog id="sendingCallDialog" class="mdl-dialog">
+    <div class="mdl-dialog__content">
+      <p>
+        Calling your Peer, pleas hold on while you wait for an answer
+      </p>
+    </div>
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+      <button type="button" class="mdl-button" id="sendingCallHangUp">Hang Up?</button>
+    </div>
+  </dialog>
+
+  <dialog id="groupMembersDialog" class="mdl-dialog">
+    <div class="mdl-dialog__content">
+      <p>
+        Remove this Member from your group?
+      </p>
+    </div>
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+      <button type="button" class="mdl-button" id="memberDialogAdminButton">Grant Admin Privaleges?</button>
+    </div>
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+      <button type="button" class="mdl-button" id="memberDialogRemoveButton">Remove</button>
+    </div>
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+      <button type="button" class="mdl-button" id="memberDialogProfileButton">Profile</button>
+    </div>
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+      <button type="button" class="mdl-button" onclick="closeGroupMembersDialog()">Exit</button>
+    </div>
+  </dialog>
+
+  <dialog id="pendingMemberDialog" class="mdl-dialog">
+    <div class="mdl-dialog__content">
+      <p>
+        Would you like to add this member to your group?
+      </p>
+    </div>
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+      <button type="button" class="mdl-button" id="pendingDialogAcceptButton">Accept</button>
+    </div>
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+      <button type="button" class="mdl-button" onclick="closePendingMemberDialog()">Exit</button>
+    </div>
+  </dialog>
+
+  <dialog id="profileDialog" class="mdl-dialog">
+  </dialog>
+
+
+  <script src="../js/bootbox.min.js"></script>
+  <script src="../js/validator.min.js"></script>
+  <!-- <script src="../js/MIDISystem.js"></script>
+  <script src="../js/userHandling.js"></script>
+  <script src="../js/SpEvent.js"></script>
+  <script src="../js/signaling-functions.js"></script>
+  <script src="../js/User.js"></script>
+  <script src="../js/main.js"></script> -->
+  <script src="../js/index.js"></script>
+
+</body>
+</html>
